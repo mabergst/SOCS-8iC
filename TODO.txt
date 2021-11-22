@@ -6,6 +6,7 @@
 
     - Display mesh as 3D object (Done ish)
 
-    - Calculate gradient from heightmap
+    - Calculate gradient and height from heightmap
+        Using droplet float position
 
     - Implement droplet eroding using heightmap
