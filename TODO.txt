@@ -1,6 +1,6 @@
     TODO
 
-    - Generate heightmap (Easy)
+    - Generate heightmap
 
     - Generate mesh (nodes and triangles) from heightmap
 
