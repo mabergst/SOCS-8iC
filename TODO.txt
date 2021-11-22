@@ -1,0 +1,11 @@
+    TODO
+
+    - Generate heightmap (Easy)
+
+    - Generate mesh (nodes and triangles) from heightmap
+
+    - Display mesh as 3D object (Done ish)
+
+    - Calculate gradient from heightmap
+
+    - Implement droplet eroding using heightmap
