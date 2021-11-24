@@ -32,5 +32,5 @@ result=returngradient(z,dropletxpos,dropletypos) #seems to work but changeing xp
 print(result)
 #ignore rest
 
-# Different decimals give diffrent height, so it is necessary
+# Different decimals give diffrent height, so it is necessary /Alex
 
