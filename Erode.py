@@ -65,19 +65,19 @@ def Erode(numDroplets,heightMap):
 
                 #If uphill, try to fill hole
                 if deltaHeight > 0:
-                    deposit = min(deltaHeight,sediment)
+                    depositAmount = min(deltaHeight,sediment)
                 else:
-                    deposit = (sediment - sedimentCapacity) * depositSpeed
+                    depositAmount = (sediment - sedimentCapacity) * depositSpeed
             
                 #Bilinear interpolation between the four nodes
-                heightMap[mapIndexX,mapIndexY] += deposit * (1 - offsetX) * (1 - offsetY)
-                heightMap[mapIndexX+1,mapIndexY] += deposit * offsetX * (1 - offsetY)
-                heightMap[mapIndexX,mapIndexY+1] += deposit * (1 - offsetX) * offsetY
-                heightMap[mapIndexX+1,mapIndexY+1] += deposit * offsetX * offsetY
+                heightMap[mapIndexX,mapIndexY] += depositAmount * (1 - offsetX) * (1 - offsetY)
+                heightMap[mapIndexX+1,mapIndexY] += depositAmount * offsetX * (1 - offsetY)
+                heightMap[mapIndexX,mapIndexY+1] += depositAmount * (1 - offsetX) * offsetY
+                heightMap[mapIndexX+1,mapIndexY+1] += depositAmount * offsetX * offsetY
             else:
 
                 #Dont remove more than deltaHeight
-                erosion = min((sedimentCapacity - sediment) * erodeSpeed, -deltaHeight)
+                erosionAmount = min((sedimentCapacity - sediment) * erodeSpeed, -deltaHeight)
 
 
 
