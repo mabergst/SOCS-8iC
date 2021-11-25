@@ -11,7 +11,6 @@ x, y = np.meshgrid(range(z.shape[0]), range(z.shape[1]))
 #ax.plot_surface(x, y, z)
 #plt.title('z as 3d height map')
 #plt.show()
-inertia=0.01
 dropletxpos=17.1
 dropletypos=15.9
 def returngradient(map,xpos,ypos):
