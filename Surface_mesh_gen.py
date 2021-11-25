@@ -53,6 +53,7 @@ def save_mesh_2_stl(polys, filename):
 
 
 def plot_stl(mesh):
+    # VERY SLOW:
     # figure = plt.figure()
     # axes = mplot3d.Axes3D(figure)
     # axes.add_collection3d(mplot3d.art3d.Poly3DCollection(mesh.vectors))
