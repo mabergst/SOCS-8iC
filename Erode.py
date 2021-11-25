@@ -74,10 +74,27 @@ def Erode(numDroplets,heightMap):
                 heightMap[mapIndexX+1,mapIndexY] += depositAmount * offsetX * (1 - offsetY)
                 heightMap[mapIndexX,mapIndexY+1] += depositAmount * (1 - offsetX) * offsetY
                 heightMap[mapIndexX+1,mapIndexY+1] += depositAmount * offsetX * offsetY
+
+                sediment -= depositAmount
             else:
 
                 #Dont remove more than deltaHeight
                 erosionAmount = min((sedimentCapacity - sediment) * erodeSpeed, -deltaHeight)
+
+
+                # Havent figured out how to do the "Correct" erosion based on erosion radius
+                # This just erodes the four nodes of the cell
+                heightMap[mapIndexX,mapIndexY] -= erosionAmount* (1 - offsetX) * (1 - offsetY)
+                heightMap[mapIndexX+1,mapIndexY] -= erosionAmount * offsetX * (1 - offsetY)
+                heightMap[mapIndexX,mapIndexY+1] -= erosionAmount * (1 - offsetX) * offsetY
+                heightMap[mapIndexX+1,mapIndexY+1] -= erosionAmount * offsetX * offsetY
+
+                sediment += erosionAmount
+
+    return(heightMap)
+
+
+
 
 
 
