@@ -1,7 +1,5 @@
 import random
 import numpy as np
-import matplotlib.pyplot as plt
-import matplotlib.pyplot as pltpip
 from perlin_noise import PerlinNoise
 
 
@@ -39,10 +37,16 @@ def generateMapTest(nrOfOctaves, mapsize):
             scale = 0.2
             weight = 1
 
-            noise_val = noise1([x/mapsize, y/mapsize])
-            noise_val += 0.5 * noise2([x/mapsize, y/mapsize])
-            noise_val += 0.25 * noise3([x/mapsize, y/mapsize])
-            noise_val += 0.125 * noise4([x/mapsize, y/mapsize])
-            heightMap[y, x] = 4*noise_val+1
+            noise_val = noise1([x/(5*mapsize), y/(5*mapsize)])
+            noise_val += 0.5 * noise2([x/(3*mapsize), y/(3*mapsize)])
+            noise_val += 0.05 * noise3([x/(2*mapsize), y/(2*mapsize)])
+            noise_val += 0.005 * noise4([x/mapsize, y/mapsize])
+            heightMap[y, x] = noise_val*1000
+    
+    #Normalize heightmap
+    minElement = np.amin(heightMap)
+    heightMap -= minElement
+    maxElement = np.amax(heightMap)
+    heightMap = heightMap/maxElement
             
     return heightMap

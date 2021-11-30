@@ -36,30 +36,20 @@ def surf_mesh(heightmap, size):
     
     return vertices, tri
 
-#heightmap = np.array([[0,1,0,2],[0,1,0,3],[1,0,0,0],[1,0,0,3]])
-
-heightMap = genMap.generateMapTest(4,100)
+heightMap = genMap.generateMapTest(4,1000)
 x, y = np.meshgrid(range(heightMap.shape[0]), range(heightMap.shape[1]))
-fig = plt.figure()
 
-print(heightMap)
+#Copy
+erodedMap = heightMap
 
-ax = fig.add_subplot(111, projection='3d')
+erodedMap = Erode.Erode(100,erodedMap)
+
+fig = plt.figure(figsize=plt.figaspect(0.5))
+
+ax = fig.add_subplot(1, 2, 1, projection='3d')
 ax.plot_surface(x, y, heightMap)
-plt.title('z as 3d height map')
+
+ax = fig.add_subplot(1, 2, 2, projection='3d')
+ax.plot_surface(x, y, erodedMap)
+
 plt.show()
-
-
-erodedMap = Erode.Erode(100,heightMap)
-
-#points,triangles = surf_mesh(z,20)
-
-#test = mesh.Engine(points, triangles)
-#test.render()
-
-
-
-#ax = fig.add_subplot(111, projection='3d')
-#ax.plot_surface(x, y, erodedMap)
-#plt.title('z as 3d height map')
-#plt.show()
