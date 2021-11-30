@@ -6,7 +6,7 @@ import GenerateHeightMap as genMap
 import Erode
 
 import matplotlib.pyplot as plt
-
+hej
 def surf_mesh(heightmap, size):
 
     map_size = list(heightmap.shape)
