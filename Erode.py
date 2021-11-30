@@ -3,14 +3,14 @@ import random
 import numpy as np
 
 erosionRadius = 3
-inertia = 0.1
+inertia = 0.3
 sedimentCapacityFactor = 4
 minSedimentCapacity = 0.1
 erodeSpeed = 0.3
 depositSpeed = 0.4
 evaporateSpeed = 0.1
 gravity = 4
-dropletLifetime = 30
+dropletLifetime = 50
 initialWaterVolume = 1
 initialSpeed = 1
 

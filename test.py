@@ -2,8 +2,10 @@ import numpy as np
 from numpy.lib.twodim_base import tri
 from scipy.spatial import Delaunay
 import mesh
-#import GenerateHeightMap
+import GenerateHeightMap as genMap
 import Erode
+
+import matplotlib.pyplot as plt
 
 def surf_mesh(heightmap, size):
 
@@ -35,15 +37,29 @@ def surf_mesh(heightmap, size):
     return vertices, tri
 
 #heightmap = np.array([[0,1,0,2],[0,1,0,3],[1,0,0,0],[1,0,0,3]])
-heightmap = np.array([[x**2 + y**2 for x in range(20)] for y in range(20)])
-points,triangles = surf_mesh(heightmap,20)
 
-test = mesh.Engine(points, triangles)
-test.render()
+heightMap = genMap.generateMapTest(4,100)
+x, y = np.meshgrid(range(heightMap.shape[0]), range(heightMap.shape[1]))
+fig = plt.figure()
 
-erodedHeightMap = Erode.Erode(10,heightmap)
+print(heightMap)
 
-points,triangles = surf_mesh(erodedHeightMap,20)
+ax = fig.add_subplot(111, projection='3d')
+ax.plot_surface(x, y, heightMap)
+plt.title('z as 3d height map')
+plt.show()
 
-test = mesh.Engine(points, triangles)
-test.render()
+
+erodedMap = Erode.Erode(100,heightMap)
+
+#points,triangles = surf_mesh(z,20)
+
+#test = mesh.Engine(points, triangles)
+#test.render()
+
+
+
+#ax = fig.add_subplot(111, projection='3d')
+#ax.plot_surface(x, y, erodedMap)
+#plt.title('z as 3d height map')
+#plt.show()
