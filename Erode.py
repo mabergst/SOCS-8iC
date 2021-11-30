@@ -2,8 +2,6 @@ import math
 import random
 import numpy as np
 
-from GradientTest import returngradient
-
 erosionRadius = 3
 inertia = 0.1
 sedimentCapacityFactor = 4
@@ -37,7 +35,7 @@ def Erode(numDroplets,heightMap):
             #Calculate droplet's offset inside the cell (0,0) = at NW node, (1,1) = at SE node
             offsetX = posX-mapIndexX
             offsetY = posY-mapIndexY
-
+            
             #Get gradient and height then normalize and move droplet
             gradientAndHeight = returngradient(heightMap,posX,posY)
 
@@ -52,7 +50,7 @@ def Erode(numDroplets,heightMap):
             posX = posX + dirX
             posY = posY + dirY
 
-            if dirLength == 0 or posX < 0 or posX >= mapSize - 1 or posY < 0 or posY >= mapSize - 1:
+            if dirLength == 0 or posX < 0 or posX >= mapSize - 1 or posY < 0 or posY >= mapSize - 1 or gradientAndHeight[2]==-1:
                     break
             
             #Calculate change in height
@@ -94,6 +92,24 @@ def Erode(numDroplets,heightMap):
     return(heightMap)
 
 
+def returngradient(map,xpos,ypos):
+    coordx=math.floor(xpos)
+    coordy=math.floor(ypos)
+    internalx=xpos-coordx
+    internaly=ypos-coordy
+    if xpos<map.shape[0]-1 and ypos<map.shape[1]-1: # how do we erode the two excluded edges?
+        corner1 = map[coordx, coordy] #ideally make corner array
+        corner2 = map[coordx + 1, coordy]
+        corner3 = map[coordx, coordy + 1]
+        corner4 = map[coordx + 1, coordy + 1]
+        gradx = (corner2-corner1)*(1-internaly)+(corner4-corner3)*internaly #not exactly sure why we do it this way but its correct?
+        grady = (corner3 - corner1) * (1 - internalx) + (corner4 - corner2) * internalx
+        height = corner1 * (1 - internalx) * (1 - internaly) + corner2 * internalx * (1 - internaly) + corner3 * (1 - internalx) * internaly + corner4 * internalx * internaly
+    else:
+        gradx=0
+        grady=0
+        height=-1
+    return (gradx,grady,height)
 
 
 

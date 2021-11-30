@@ -2,6 +2,8 @@ import numpy as np
 from numpy.lib.twodim_base import tri
 from scipy.spatial import Delaunay
 import mesh
+#import GenerateHeightMap
+import Erode
 
 def surf_mesh(heightmap, size):
 
@@ -32,13 +34,16 @@ def surf_mesh(heightmap, size):
     
     return vertices, tri
 
-heigtmap = np.array([[0,0,0],[0,1,0],[0,0,0]])
+#heightmap = np.array([[0,1,0,2],[0,1,0,3],[1,0,0,0],[1,0,0,3]])
+heightmap = np.array([[x**2 + y**2 for x in range(20)] for y in range(20)])
+points,triangles = surf_mesh(heightmap,20)
 
-points,triangles = surf_mesh(heigtmap,3)
+test = mesh.Engine(points, triangles)
+test.render()
 
-print(points)
+erodedHeightMap = Erode.Erode(10,heightmap)
 
-print(triangles)
+points,triangles = surf_mesh(erodedHeightMap,20)
 
 test = mesh.Engine(points, triangles)
 test.render()
