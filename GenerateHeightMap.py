@@ -2,7 +2,6 @@ from random import Random
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.pyplot as pltpip
-from numpy.lib.npyio import mafromtxt
 from perlin_noise import PerlinNoise
 
 
@@ -27,15 +26,10 @@ def generateMapTest(nrOfOctaves, mapsize):
             weight = 1
 
             for i in range(nrOfOctaves):
-                
-                xy = Random.randint(-1000, 1000) + [x/mapsize, y/mapsize*scale] 
+
+                xy = Random.randint(-1000, 1000) + [x/mapsize, y/mapsize*scale]
                 noiseValue += PerlinNoise(xy(1),xy(2))*weight
                 weight *= persistence
                 scale *= lacunarity
             map[y*mapsize+ x] = noiseValue
     return map
-
-
-
-
-

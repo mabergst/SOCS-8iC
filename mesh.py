@@ -4,7 +4,7 @@ import math
 
 
 class Engine:
-    def __init__(self, points, triangles, height=400, width=600, distance=6, scale=100):
+    def __init__(self, points, triangles, height=400, width=600, distance=20, scale=100):
         self.window = tk.Tk()
         self.window.title('3D Graphics')
         self.image = tk.Canvas(self.window, width=width, height=height)
