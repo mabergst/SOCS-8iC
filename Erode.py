@@ -3,14 +3,14 @@ import random
 import numpy as np
 
 erosionRadius = 3
-inertia = 0.3
+inertia = 0.05
 sedimentCapacityFactor = 4
-minSedimentCapacity = 0.1
-erodeSpeed = 0.3
-depositSpeed = 0.4
+minSedimentCapacity = 0.01
+erodeSpeed = 0.4
+depositSpeed = 0.3
 evaporateSpeed = 0.1
 gravity = 4
-dropletLifetime = 50
+dropletLifetime = 30
 initialWaterVolume = 1
 initialSpeed = 1
 
@@ -78,7 +78,6 @@ def Erode(numDroplets,heightMap):
 
                 #Dont remove more than deltaHeight
                 erosionAmount = min((sedimentCapacity - sediment) * erodeSpeed, -deltaHeight)
-
 
                 # Havent figured out how to do the "Correct" erosion based on erosion radius
                 # This just erodes the four nodes of the cell
