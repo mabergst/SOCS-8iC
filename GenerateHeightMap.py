@@ -37,16 +37,18 @@ def generateMapTest(nrOfOctaves, mapsize):
             scale = 0.2
             weight = 1
 
-            noise_val = noise1([x/(5*mapsize), y/(5*mapsize)])
-            noise_val += 0.5 * noise2([x/(3*mapsize), y/(3*mapsize)])
-            noise_val += 0.05 * noise3([x/(2*mapsize), y/(2*mapsize)])
-            noise_val += 0.005 * noise4([x/mapsize, y/mapsize])
-            heightMap[y, x] = noise_val*1000
+            noise_val = 100000*noise1([x/(30*mapsize), y/(30*mapsize)])
+            noise_val += 50000* noise2([x/(5*mapsize), y/(5*mapsize)])
+            noise_val += 10000 * noise3([x/(2*mapsize), y/(2*mapsize)])
+            noise_val += 1000 * noise4([x/mapsize, y/mapsize])
+            heightMap[y, x] = noise_val
     
     #Normalize heightmap
     minElement = np.amin(heightMap)
     heightMap -= minElement
     maxElement = np.amax(heightMap)
     heightMap = heightMap/maxElement
+
+    heightMap[0,0] = -1
             
     return heightMap

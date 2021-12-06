@@ -188,7 +188,7 @@ erodedMap = Erode(100,erodedMap)
 
 
 
-
+#Show the paths of the waterdroplets in both cases and compare aswell
 
             
 

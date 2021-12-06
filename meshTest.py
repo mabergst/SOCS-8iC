@@ -21,14 +21,14 @@ terrain_cmap = matplotlib.cm.get_cmap('terrain')
 terrain = matplotlib_to_plotly(terrain_cmap, 255)
 
 
+mapSize = 400
 
-
-heightMap = genMap.generateMapTest(4,200)
+heightMap = genMap.generateMapTest(4,mapSize)
 
 erodedMap = heightMap.copy()
 
 
-erodedMap = Erode.Erode(100,erodedMap)
+erodedMap = Erode.Erode(100000,erodedMap)
 
 
 
@@ -38,12 +38,12 @@ erodedMap = Erode.Erode(100,erodedMap)
 plotly.offline.init_notebook_mode(connected=True)
 figErode = go.Figure(data=[go.Surface(colorscale=terrain,z=erodedMap)])
 figErode.update_layout(title='Eroded')
-htmlErode= plotly.offline.plot(figErode, filename='3d-terrain-plotly.html',include_plotlyjs='cdn')
+htmlErode= plotly.offline.plot(figErode, filename='Eroded.html',include_plotlyjs='cdn')
 HTML(htmlErode)
 
 fig = go.Figure(data=[go.Surface(colorscale=terrain,z=heightMap)])
 fig.update_layout(title='Not Eroded')
-html= plotly.offline.plot(fig, filename='3d-terrain-plotly.html',include_plotlyjs='cdn')
+html= plotly.offline.plot(fig, filename='notEroded.html',include_plotlyjs='cdn')
 
 
 HTML(html)
