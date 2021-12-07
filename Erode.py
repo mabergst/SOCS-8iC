@@ -89,6 +89,10 @@ def Erode(numDroplets,heightMap):
                     heightMap[nodes[i][0],nodes[i][1]] = max(heightMap[nodes[i][0],nodes[i][1]],-1)
 
                 sediment += erosionAmount
+            
+            speed = math.sqrt( max(speed * speed + deltaHeight * gravity,0))
+
+            water *= (1 - evaporateSpeed)
 
     return(heightMap)
 

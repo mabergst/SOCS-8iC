@@ -16,22 +16,23 @@ dropletLifetime = 30
 initialWaterVolume = 1
 initialSpeed = 1
 
-def Erode(numDroplets,heightMap):
+def Erode(numDroplets,heightMap,iterations):
     #Assuming heightMap is a numpyArray
     mapSize = heightMap.shape[0]
     nodesIndex = getNodeOffsets(erosionRadius)
 
-    for i in range(numDroplets):
-        posX = mapSize*random.random()
-        posY = mapSize*random.random()
-        speed = initialSpeed
-        water = initialWaterVolume
-        sediment = 0
+    for iIter in range(iterations):
+        for i in range(numDroplets):
+            posX = mapSize*random.random()
+            posY = mapSize*random.random()
+            speed = initialSpeed
+            water = initialWaterVolume
+            sediment = 0
 
-        dirX = 0
-        dirY = 0
+            dirX = 0
+            dirY = 0
 
-        for j in range(dropletLifetime):
+        
             mapIndexX = int(posX)
             mapIndexY = int(posY)
 
@@ -89,6 +90,10 @@ def Erode(numDroplets,heightMap):
                     heightMap[nodes[i][0],nodes[i][1]] = max(heightMap[nodes[i][0],nodes[i][1]],-1)
 
                 sediment += erosionAmount
+
+            speed = math.sqrt( max(speed * speed + deltaHeight * gravity,0))
+            water *= (1 - evaporateSpeed)
+
 
     return(heightMap)
 
@@ -191,7 +196,10 @@ erodedMap = Erode(100,erodedMap)
 #Show the paths of the waterdroplets in both cases and compare aswell
 
             
-
+class Droplet:
+  def __init__(self, posX,posY,water,speed,dirX,dirY,height):
+    self.name = name
+    self.age = age
 
 
 
