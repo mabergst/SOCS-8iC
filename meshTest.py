@@ -2,6 +2,7 @@ import numpy as np
 from numpy.lib.twodim_base import tri
 import GenerateHeightMap as genMap
 import Erode
+import InteractingErode
 import plotly
 import plotly.graph_objects as go
 from IPython.core.display import HTML
@@ -21,14 +22,14 @@ terrain_cmap = matplotlib.cm.get_cmap('terrain')
 terrain = matplotlib_to_plotly(terrain_cmap, 255)
 
 
-mapSize = 400
+mapSize = 50
 
 heightMap = genMap.generateMapTest(4,mapSize)
 
 erodedMap = heightMap.copy()
 
 
-erodedMap = Erode.Erode(100000,erodedMap)
+erodedMap = InteractingErode.Erode(50000,erodedMap,30)
 
 
 
