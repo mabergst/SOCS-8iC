@@ -178,18 +178,6 @@ def getNodeOffsets(radius):
     uniqueNodeOffsets = unique(nodeOffsets)
     return uniqueNodeOffsets
     
-        
-
-    
-
-heightMap = genMap.generateMapTest(4,100)
-
-erodedMap = heightMap.copy()
-
-
-erodedMap = Erode(100,erodedMap)
-
-
 
 
 

@@ -17,7 +17,7 @@ dropletLifetime = 30
 initialWaterVolume = 1
 initialSpeed = 1
 
-def Erode(numDroplets,heightMap,iterations):
+def Erode(numDroplets,heightMap):
     #Assuming heightMap is a numpyArray
     mapSize = heightMap.shape[0]
     nodesIndex = getNodeOffsets(erosionRadius)
@@ -26,11 +26,9 @@ def Erode(numDroplets,heightMap,iterations):
     for i in range (numDroplets):
         droplets.append(Droplet.Droplet(mapSize*random.random(),mapSize*random.random(),0,0,initialWaterVolume,initialSpeed,0,0,0))
 
-
-    for iIter in range(iterations):
+    for j in range(dropletLifetime):
         for drop in droplets:
         
-            
             mapIndexX = int(drop.posX)
             mapIndexY = int(drop.posY)
 
@@ -38,16 +36,16 @@ def Erode(numDroplets,heightMap,iterations):
             offsetX = drop.posX-mapIndexX
             offsetY = drop.posY-mapIndexY
             
-
-            #Set gradient and height
+            #Get gradient and height then normalize and move droplet
+                 #Set gradient and height
             drop.setGradientAndHeight(heightMap)
             prevHeight = drop.height
 
             #Move drop
             drop.move()
 
-            if drop.posX < 0 or drop.posX >= mapSize - 1 or drop.posY < 0 or drop.posY >= mapSize - 1 or drop.height==-1:
-                del drop
+            if  math.sqrt(drop.dirX*drop.dirX+drop.dirY*drop.dirY)==0 or drop.posX < 0 or drop.posX >= mapSize - 1 or drop.posY < 0 or drop.posY >= mapSize - 1 or drop.height==-1:
+                droplets.remove(drop)
                 continue
 
             #Set gradient and height
@@ -56,9 +54,9 @@ def Erode(numDroplets,heightMap,iterations):
             #Calculate change in height
             deltaHeight = drop.height-prevHeight
 
-            # Calculates the droplet capacity
+             # Calculates the droplet capacity
             drop.capacity = max(-deltaHeight * drop.speed * drop.water * sedimentCapacityFactor, minSedimentCapacity)
-            
+
             if drop.sediment > drop.capacity or deltaHeight > 0:
 
                 #If uphill, try to fill hole
@@ -86,30 +84,15 @@ def Erode(numDroplets,heightMap,iterations):
                     heightMap[nodes[i][0],nodes[i][1]] = max(heightMap[nodes[i][0],nodes[i][1]],-1)
 
                 drop.sediment += erosionAmount
-
+            
             drop.speed = math.sqrt( max(drop.speed * drop.speed + deltaHeight * gravity,0))
+
             drop.water *= (1 - evaporateSpeed)
 
     return(heightMap)
 
 
-
-def getHeight(map,posX,posY):
-    coordx=math.floor(posX)
-    coordy=math.floor(posY)
-    internalx=posX-coordx
-    internaly=posY-coordy
-    if posX<map.shape[0]-1 and posY<map.shape[1]-1: 
-        corner1 = map[coordx, coordy]
-        corner2 = map[coordx + 1, coordy]
-        corner3 = map[coordx, coordy + 1]
-        corner4 = map[coordx + 1, coordy + 1]
-        height = corner1 * (1 - internalx) * (1 - internaly) + corner2 * internalx * (1 - internaly) + corner3 * (1 - internalx) * internaly + corner4 * internalx * internaly
-    else:
-        height = -1
     
-    return height
-
 
 def getErodeNodesAndWeights(erosionRadius,posX,posY,nodesIndex,mapSize):
     mapIndexX = int(posX)
@@ -133,6 +116,7 @@ def getErodeNodesAndWeights(erosionRadius,posX,posY,nodesIndex,mapSize):
 
 def softmax(x):
     return np.exp(x) / np.sum(np.exp(x), axis=0)
+
 
 
 
@@ -169,9 +153,8 @@ def getNodeOffsets(radius):
 
 
 
-#Show the paths of the waterdroplets in both cases and compare aswell
+            
 
-        
 
 
 

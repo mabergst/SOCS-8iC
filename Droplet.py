@@ -14,7 +14,7 @@ class Droplet:
         self.speed = speed
         self.sediment = sediment
         self.capacity = capacity
-        self.inertia = self.water*0.05
+        self.inertia = 0.05*water
         
 
     def move(self):
@@ -31,7 +31,7 @@ class Droplet:
             corner2 = map[coordx + 1, coordy]
             corner3 = map[coordx, coordy + 1]
             corner4 = map[coordx + 1, coordy + 1]
-            gradx = (corner2-corner1)*(1-internaly)+(corner4-corner3)*internaly #not exactly sure why we do it this way but its correct?
+            gradx = (corner2-corner1)*(1-internaly)+(corner4-corner3)*internaly 
             grady = (corner3 - corner1) * (1 - internalx) + (corner4 - corner2) * internalx
             height = corner1 * (1 - internalx) * (1 - internaly) + corner2 * internalx * (1 - internaly) + corner3 * (1 - internalx) * internaly + corner4 * internalx * internaly
         else:
