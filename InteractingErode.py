@@ -24,9 +24,11 @@ def Erode(numDroplets,heightMap):
 
     droplets = []
     for i in range (numDroplets):
-        droplets.append(Droplet.Droplet(mapSize*random.random(),mapSize*random.random(),0,0,initialWaterVolume,initialSpeed,0,0,0))
+        droplets.append(Droplet.Droplet(mapSize*random.random(),mapSize*random.random(),0,0,initialWaterVolume,initialSpeed,0,0,0,erosionRadius))
+
 
     for j in range(dropletLifetime):
+        print(len(droplets))
         for drop in droplets:
         
             mapIndexX = int(drop.posX)
@@ -35,11 +37,14 @@ def Erode(numDroplets,heightMap):
             #Calculate droplet's offset inside the cell (0,0) = at NW node, (1,1) = at SE node
             offsetX = drop.posX-mapIndexX
             offsetY = drop.posY-mapIndexY
+
+            nearDrops = getNearDrops(droplets,drop)
             
-            #Get gradient and height then normalize and move droplet
-                 #Set gradient and height
-            drop.setGradientAndHeight(heightMap)
+            #Set gradient and height
+            drop.setGradientAndHeight(heightMap,nearDrops)
             prevHeight = drop.height
+
+            
 
             #Move drop
             drop.move()
@@ -49,7 +54,7 @@ def Erode(numDroplets,heightMap):
                 continue
 
             #Set gradient and height
-            drop.setGradientAndHeight(heightMap)
+            drop.setGradientAndHeight(heightMap,nearDrops)
             
             #Calculate change in height
             deltaHeight = drop.height-prevHeight
@@ -119,7 +124,6 @@ def softmax(x):
 
 
 
-
 def getDistance(position,target):
     d = math.sqrt((position[0]-target[0])*(position[0]-target[0])+(position[1]-target[1])*(position[1]-target[1]))
     return d
@@ -150,6 +154,16 @@ def getNodeOffsets(radius):
     return uniqueNodeOffsets
     
 
+def getNearDrops(droplets, currentDrop):
+    nearDrops = []
+    for drop in droplets:
+        if getDistance([currentDrop.posX, currentDrop.posY],[drop.posX, drop.posY]) < erosionRadius:
+            nearDrops.append(drop)
+        
+    return(nearDrops)
+
+
+    
 
 
 

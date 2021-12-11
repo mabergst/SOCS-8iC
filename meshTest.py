@@ -23,14 +23,14 @@ terrain_cmap = matplotlib.cm.get_cmap('terrain')
 terrain = matplotlib_to_plotly(terrain_cmap, 255)
 
 
-mapSize = 200
+mapSize = 100
 
 heightMap = genMap.generateMapTest(4,mapSize)
 
 erodedMap = heightMap.copy()
 
 
-erodedMap = InteractingErode.Erode(70000,erodedMap)
+erodedMap = InteractingErode.Erode(10000,erodedMap)
 
 
 

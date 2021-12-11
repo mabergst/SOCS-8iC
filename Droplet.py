@@ -2,7 +2,7 @@ import math
 
 
 class Droplet:
-    def __init__(self,posX,posY,dirX,dirY,water,speed,sediment,capacity,height):
+    def __init__(self,posX,posY,dirX,dirY,water,speed,sediment,capacity,height,erosionRadius):
         self.posX = posX
         self.posY = posY
         self.height = height
@@ -15,13 +15,14 @@ class Droplet:
         self.sediment = sediment
         self.capacity = capacity
         self.inertia = 0.05*water
+        self.erosionRadius = erosionRadius
         
 
     def move(self):
         self.posX = self.posX + self.dirX
         self.posY = self.posY + self.dirY
 
-    def setGradientAndHeight(self,map):
+    def setGradientAndHeight(self,map,nearDrops):
         coordx=math.floor(self.posX)
         coordy=math.floor(self.posY)
         internalx=self.posX-coordx
@@ -39,9 +40,24 @@ class Droplet:
             grady=0
             height=-1
 
+        attractionVectors = []
 
-        dirX = (self.dirX * self.inertia - gradx* (1 - self.inertia))
-        dirY = (self.dirY * self.inertia - grady* (1 - self.inertia))
+        for drop in nearDrops:
+            dropDir = [drop.posX-self.posX,drop.posY-self.posY]
+            length = math.sqrt(dropDir[0]*dropDir[0]+dropDir[1]*dropDir[1])
+            attractionVectors.append([dropDir[0]/(self.erosionRadius-length),dropDir[1]/(self.erosionRadius-length)])
+
+
+        attractionVector = []
+        for vect in attractionVectors:
+            attractionVector = attractionVector+vect
+        
+        attractionVector[0] = attractionVector[0]/len(attractionVectors)
+        attractionVector[1] = attractionVector[1]/len(attractionVectors)
+
+
+        dirX = (self.dirX * self.inertia - (gradx+attractionVector[0])*(1 - self.inertia))
+        dirY = (self.dirY * self.inertia - (grady+attractionVector[1])*(1 - self.inertia))
 
         dirLength = math.sqrt(dirX*dirX+dirY*dirY)
         if dirLength != 0:
