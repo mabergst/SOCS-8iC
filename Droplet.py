@@ -1,5 +1,6 @@
 import math
 
+aForce = 0.5
 
 class Droplet:
     def __init__(self,posX,posY,dirX,dirY,water,speed,sediment,capacity,height,erosionRadius):
@@ -14,7 +15,7 @@ class Droplet:
         self.speed = speed
         self.sediment = sediment
         self.capacity = capacity
-        self.inertia = 0.05*water
+        self.inertia = min(1, 0.05*water)
         self.erosionRadius = erosionRadius
         
 
@@ -54,12 +55,13 @@ class Droplet:
             attractionVector[1] = attractionVector[1]+vect[1]
         
         if len(attractionVectors) > 0:
-            attractionVector[0] = attractionVector[0]/len(attractionVectors)
-            attractionVector[1] = attractionVector[1]/len(attractionVectors)
+            veclength = math.sqrt(attractionVector[0]*attractionVector[0]+attractionVector[1]*attractionVector[1])
+            attractionVector[0] = attractionVector[0]/veclength
+            attractionVector[1] = attractionVector[1]/veclength
 
 
-        dirX = (self.dirX * self.inertia - (gradx+attractionVector[0])*(1 - self.inertia))
-        dirY = (self.dirY * self.inertia - (grady+attractionVector[1])*(1 - self.inertia))
+        dirX = (self.dirX * self.inertia - (gradx+aForce*attractionVector[0])*(1 - self.inertia))
+        dirY = (self.dirY * self.inertia - (grady+aForce*attractionVector[1])*(1 - self.inertia))
 
         dirLength = math.sqrt(dirX*dirX+dirY*dirY)
         if dirLength != 0:

@@ -6,12 +6,12 @@ import GenerateHeightMap as genMap
 import Droplet
 
 erosionRadius = 4
-mergeRadius = 0.5
+mergeRadius = 0.01
 inertia = 0.03
 sedimentCapacityFactor = 4
-minSedimentCapacity = 0.01
+minSedimentCapacity = 0.03
 erodeSpeed = 0.2
-depositSpeed = 0.5
+depositSpeed = 0.1
 evaporateSpeed = 0.1
 gravity = 4
 dropletLifetime = 30
@@ -48,11 +48,11 @@ def Erode(numDroplets,heightMap):
                     droplets.append(mergeDrops(drop,nearDrop))
                     break
 
+
+
             #Contnue if drop has merged
             if droplets.count(drop)==0:
                 continue
-
-            nearDrops = []
             
             #Set gradient and height
             drop.setGradientAndHeight(heightMap,nearDrops)
@@ -142,6 +142,10 @@ def getDistance(position,target):
     d = math.sqrt((position[0]-target[0])*(position[0]-target[0])+(position[1]-target[1])*(position[1]-target[1]))
     return d
 
+def getDropDistance(position,target):
+    d = math.sqrt((position.posX-target.posX)*(position.posX-target.posX)+(position.posY-target.posY)*(position.posY-target.posY)+(position.height-target.height)*(position.height-target.height))
+    return d
+
 
 def unique(list1):
     # insert the list to the set
@@ -171,7 +175,7 @@ def getNodeOffsets(radius):
 def getNearDrops(droplets, currentDrop):
     nearDrops = []
     for drop in droplets:
-        if getDistance([currentDrop.posX, currentDrop.posY],[drop.posX, drop.posY]) < erosionRadius and drop is not currentDrop:
+        if getDropDistance(drop,currentDrop) < erosionRadius and drop is not currentDrop:
             nearDrops.append(drop)
     return(nearDrops)
 
@@ -179,15 +183,19 @@ def mergeDrops(drop1,drop2):
     posX = (drop1.posX+drop2.posX)/2
     posY = (drop1.posY+drop2.posY)/2
 
+    dirX = (drop1.dirX+drop2.dirX)
+    dirY = (drop1.dirY+drop2.dirY)
+
+    dirLength = math.sqrt(dirX*dirX+dirY*dirY)
+    if dirLength != 0:
+        dirX = dirX/dirLength
+        dirY = dirY/dirLength
+
     speed = (drop1.speed+drop2.speed)/2
-    height = 0
-    dirX = 0
-    dirY = 0
     water = drop1.water + drop2.water
     sediment = drop1.sediment + drop2.sediment
-    capacity = 0
     
-    return Droplet.Droplet(posX,posY,0,0,water,speed,sediment,0,0,erosionRadius)
+    return Droplet.Droplet(posX,posY,dirX,dirY,water,speed,sediment,0,0,erosionRadius)
 
 
 
