@@ -48,12 +48,14 @@ class Droplet:
             attractionVectors.append([dropDir[0]/(self.erosionRadius-length),dropDir[1]/(self.erosionRadius-length)])
 
 
-        attractionVector = []
+        attractionVector = [0,0]
         for vect in attractionVectors:
-            attractionVector = attractionVector+vect
+            attractionVector[0] = attractionVector[0]+vect[0]
+            attractionVector[1] = attractionVector[1]+vect[1]
         
-        attractionVector[0] = attractionVector[0]/len(attractionVectors)
-        attractionVector[1] = attractionVector[1]/len(attractionVectors)
+        if len(attractionVectors) > 0:
+            attractionVector[0] = attractionVector[0]/len(attractionVectors)
+            attractionVector[1] = attractionVector[1]/len(attractionVectors)
 
 
         dirX = (self.dirX * self.inertia - (gradx+attractionVector[0])*(1 - self.inertia))

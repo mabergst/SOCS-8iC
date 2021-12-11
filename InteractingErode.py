@@ -6,6 +6,7 @@ import GenerateHeightMap as genMap
 import Droplet
 
 erosionRadius = 4
+mergeRadius = 0.5
 inertia = 0.03
 sedimentCapacityFactor = 4
 minSedimentCapacity = 0.01
@@ -39,6 +40,19 @@ def Erode(numDroplets,heightMap):
             offsetY = drop.posY-mapIndexY
 
             nearDrops = getNearDrops(droplets,drop)
+
+            for nearDrop in nearDrops:
+                if getDistance([drop.posX, drop.posY],[nearDrop.posX, nearDrop.posY]) < mergeRadius:
+                    droplets.remove(nearDrop)
+                    droplets.remove(drop)
+                    droplets.append(mergeDrops(drop,nearDrop))
+                    break
+
+            #Contnue if drop has merged
+            if droplets.count(drop)==0:
+                continue
+
+            nearDrops = []
             
             #Set gradient and height
             drop.setGradientAndHeight(heightMap,nearDrops)
@@ -54,10 +68,10 @@ def Erode(numDroplets,heightMap):
                 continue
 
             #Set gradient and height
-            drop.setGradientAndHeight(heightMap,nearDrops)
+            currentHeight = getHeight(drop.posX,drop.posY,heightMap)
             
             #Calculate change in height
-            deltaHeight = drop.height-prevHeight
+            deltaHeight = currentHeight-prevHeight
 
              # Calculates the droplet capacity
             drop.capacity = max(-deltaHeight * drop.speed * drop.water * sedimentCapacityFactor, minSedimentCapacity)
@@ -157,15 +171,42 @@ def getNodeOffsets(radius):
 def getNearDrops(droplets, currentDrop):
     nearDrops = []
     for drop in droplets:
-        if getDistance([currentDrop.posX, currentDrop.posY],[drop.posX, drop.posY]) < erosionRadius:
+        if getDistance([currentDrop.posX, currentDrop.posY],[drop.posX, drop.posY]) < erosionRadius and drop is not currentDrop:
             nearDrops.append(drop)
-        
     return(nearDrops)
+
+def mergeDrops(drop1,drop2):
+    posX = (drop1.posX+drop2.posX)/2
+    posY = (drop1.posY+drop2.posY)/2
+
+    speed = (drop1.speed+drop2.speed)/2
+    height = 0
+    dirX = 0
+    dirY = 0
+    water = drop1.water + drop2.water
+    sediment = drop1.sediment + drop2.sediment
+    capacity = 0
+    
+    return Droplet.Droplet(posX,posY,0,0,water,speed,sediment,0,0,erosionRadius)
+
 
 
     
 
+def getHeight(posX,posY,map):
+    coordx=math.floor(posX)
+    coordy=math.floor(posY)
+    internalx=posX-coordx
+    internaly=posY-coordy
+    if posX<map.shape[0]-1 and posY<map.shape[1]-1: 
+        corner1 = map[coordx, coordy]
+        corner2 = map[coordx + 1, coordy]
+        corner3 = map[coordx, coordy + 1]
+        corner4 = map[coordx + 1, coordy + 1]
+        height = corner1 * (1 - internalx) * (1 - internaly) + corner2 * internalx * (1 - internaly) + corner3 * (1 - internalx) * internaly + corner4 * internalx * internaly
 
+    return(height)
+    
 
             
 
