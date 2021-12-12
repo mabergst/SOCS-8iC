@@ -4,7 +4,7 @@ import numpy as np
 import itertools
 import GenerateHeightMap as genMap
 
-erosionRadius = 4
+erosionRadius = 3
 inertia = 0.03
 sedimentCapacityFactor = 4
 minSedimentCapacity = 0.01

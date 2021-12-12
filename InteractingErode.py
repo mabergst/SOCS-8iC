@@ -6,7 +6,7 @@ import GenerateHeightMap as genMap
 import Droplet
 
 erosionRadius = 4
-mergeRadius = 0.01
+mergeRadius = 0.1
 inertia = 0.03
 sedimentCapacityFactor = 4
 minSedimentCapacity = 0.03
@@ -18,95 +18,97 @@ dropletLifetime = 30
 initialWaterVolume = 1
 initialSpeed = 1
 
+nrBatches = 20
+
 def Erode(numDroplets,heightMap):
     #Assuming heightMap is a numpyArray
     mapSize = heightMap.shape[0]
     nodesIndex = getNodeOffsets(erosionRadius)
 
-    droplets = []
-    for i in range (numDroplets):
-        droplets.append(Droplet.Droplet(mapSize*random.random(),mapSize*random.random(),0,0,initialWaterVolume,initialSpeed,0,0,0,erosionRadius))
 
+    for k in range(nrBatches):
+        droplets = []
+        for i in range (1000):
+            droplets.append(Droplet.Droplet(mapSize*random.random(),mapSize*random.random(),0,0,initialWaterVolume,initialSpeed,0,0,0))
 
-    for j in range(dropletLifetime):
-        print(len(droplets))
-        for drop in droplets:
-        
-            mapIndexX = int(drop.posX)
-            mapIndexY = int(drop.posY)
+        for j in range(dropletLifetime):
+            print(len(droplets))
+            for drop in droplets:
+            
+                mapIndexX = int(drop.posX)
+                mapIndexY = int(drop.posY)
 
-            #Calculate droplet's offset inside the cell (0,0) = at NW node, (1,1) = at SE node
-            offsetX = drop.posX-mapIndexX
-            offsetY = drop.posY-mapIndexY
+                #Calculate droplet's offset inside the cell (0,0) = at NW node, (1,1) = at SE node
+                offsetX = drop.posX-mapIndexX
+                offsetY = drop.posY-mapIndexY
 
-            nearDrops = getNearDrops(droplets,drop)
+                nearDrops = getNearDrops(droplets,drop)
 
-            for nearDrop in nearDrops:
-                if getDistance([drop.posX, drop.posY],[nearDrop.posX, nearDrop.posY]) < mergeRadius:
-                    droplets.remove(nearDrop)
+                for nearDrop in nearDrops:
+                    if getDistance([drop.posX, drop.posY],[nearDrop.posX, nearDrop.posY]) < mergeRadius:
+                        droplets.remove(nearDrop)
+                        droplets.remove(drop)
+                        droplets.append(mergeDrops(drop,nearDrop))
+                        break
+
+                #Contnue if drop has merged
+                if droplets.count(drop)==0:
+                    continue
+                
+                nearDrops = []
+                #Set gradient and height
+                drop.setGradientAndHeight(heightMap,nearDrops)
+                prevHeight = drop.height
+
+                
+
+                #Move drop
+                drop.move()
+
+                if  math.sqrt(drop.dirX*drop.dirX+drop.dirY*drop.dirY)==0 or drop.posX < 0 or drop.posX >= mapSize - 1 or drop.posY < 0 or drop.posY >= mapSize - 1 or drop.height==-1:
                     droplets.remove(drop)
-                    droplets.append(mergeDrops(drop,nearDrop))
-                    break
+                    continue
 
+                #Set gradient and height
+                currentHeight = getHeight(drop.posX,drop.posY,heightMap)
+                
+                #Calculate change in height
+                deltaHeight = currentHeight-prevHeight
 
+                # Calculates the droplet capacity
+                drop.capacity = max(-deltaHeight * drop.speed * drop.water * sedimentCapacityFactor, minSedimentCapacity)
 
-            #Contnue if drop has merged
-            if droplets.count(drop)==0:
-                continue
-            
-            #Set gradient and height
-            drop.setGradientAndHeight(heightMap,nearDrops)
-            prevHeight = drop.height
+                if drop.sediment > drop.capacity or deltaHeight > 0:
 
-            
+                    #If uphill, try to fill hole
+                    if deltaHeight > 0:
+                        depositAmount = min(deltaHeight,drop.sediment)
+                    else:
+                        depositAmount = (drop.sediment - drop.capacity) * depositSpeed
+                
+                    #Bilinear interpolation between the four nodes
+                    heightMap[mapIndexX,mapIndexY] += depositAmount * (1 - offsetX) * (1 - offsetY)
+                    heightMap[mapIndexX+1,mapIndexY] += depositAmount * offsetX * (1 - offsetY)
+                    heightMap[mapIndexX,mapIndexY+1] += depositAmount * (1 - offsetX) * offsetY
+                    heightMap[mapIndexX+1,mapIndexY+1] += depositAmount * offsetX * offsetY
 
-            #Move drop
-            drop.move()
-
-            if  math.sqrt(drop.dirX*drop.dirX+drop.dirY*drop.dirY)==0 or drop.posX < 0 or drop.posX >= mapSize - 1 or drop.posY < 0 or drop.posY >= mapSize - 1 or drop.height==-1:
-                droplets.remove(drop)
-                continue
-
-            #Set gradient and height
-            currentHeight = getHeight(drop.posX,drop.posY,heightMap)
-            
-            #Calculate change in height
-            deltaHeight = currentHeight-prevHeight
-
-             # Calculates the droplet capacity
-            drop.capacity = max(-deltaHeight * drop.speed * drop.water * sedimentCapacityFactor, minSedimentCapacity)
-
-            if drop.sediment > drop.capacity or deltaHeight > 0:
-
-                #If uphill, try to fill hole
-                if deltaHeight > 0:
-                    depositAmount = min(deltaHeight,drop.sediment)
+                    drop.sediment -= depositAmount
                 else:
-                    depositAmount = (drop.sediment - drop.capacity) * depositSpeed
-            
-                #Bilinear interpolation between the four nodes
-                heightMap[mapIndexX,mapIndexY] += depositAmount * (1 - offsetX) * (1 - offsetY)
-                heightMap[mapIndexX+1,mapIndexY] += depositAmount * offsetX * (1 - offsetY)
-                heightMap[mapIndexX,mapIndexY+1] += depositAmount * (1 - offsetX) * offsetY
-                heightMap[mapIndexX+1,mapIndexY+1] += depositAmount * offsetX * offsetY
 
-                drop.sediment -= depositAmount
-            else:
+                    #Dont remove more than deltaHeight
+                    erosionAmount = min((drop.capacity - drop.sediment) * erodeSpeed, -deltaHeight)
 
-                #Dont remove more than deltaHeight
-                erosionAmount = min((drop.capacity - drop.sediment) * erodeSpeed, -deltaHeight)
+                    weights,nodes = getErodeNodesAndWeights(erosionRadius,drop.posX,drop.posY,nodesIndex,mapSize)
 
-                weights,nodes = getErodeNodesAndWeights(erosionRadius,drop.posX,drop.posY,nodesIndex,mapSize)
+                    for i in range(len(weights)):
+                        heightMap[nodes[i][0],nodes[i][1]] -= erosionAmount*weights[i]
+                        heightMap[nodes[i][0],nodes[i][1]] = max(heightMap[nodes[i][0],nodes[i][1]],-1)
 
-                for i in range(len(weights)):
-                    heightMap[nodes[i][0],nodes[i][1]] -= erosionAmount*weights[i]
-                    heightMap[nodes[i][0],nodes[i][1]] = max(heightMap[nodes[i][0],nodes[i][1]],-1)
+                    drop.sediment += erosionAmount
+                
+                drop.speed = math.sqrt( max(drop.speed * drop.speed + deltaHeight * gravity,0))
 
-                drop.sediment += erosionAmount
-            
-            drop.speed = math.sqrt( max(drop.speed * drop.speed + deltaHeight * gravity,0))
-
-            drop.water *= (1 - evaporateSpeed)
+                drop.water *= (1 - evaporateSpeed)
 
     return(heightMap)
 
@@ -195,7 +197,7 @@ def mergeDrops(drop1,drop2):
     water = drop1.water + drop2.water
     sediment = drop1.sediment + drop2.sediment
     
-    return Droplet.Droplet(posX,posY,dirX,dirY,water,speed,sediment,0,0,erosionRadius)
+    return Droplet.Droplet(posX,posY,dirX,dirY,water,speed,sediment,0,0)
 
 
 

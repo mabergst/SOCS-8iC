@@ -30,7 +30,7 @@ heightMap = genMap.generateMapTest(4,mapSize)
 erodedMap = heightMap.copy()
 
 
-erodedMap = InteractingErode.Erode(10000,erodedMap)
+erodedMap = InteractingErode.Erode(70000,erodedMap)
 
 
 
