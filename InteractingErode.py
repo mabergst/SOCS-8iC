@@ -7,6 +7,7 @@ import Droplet
 
 erosionRadius = 4
 mergeRadius = 0.1
+forceRadius = 3
 inertia = 0.03
 sedimentCapacityFactor = 4
 minSedimentCapacity = 0.03
@@ -174,10 +175,10 @@ def getNodeOffsets(radius):
     return uniqueNodeOffsets
     
 
-def getNearDrops(droplets, currentDrop):
+def getNearDrops(droplets, currentDrop,forceRadius):
     nearDrops = []
     for drop in droplets:
-        if getDropDistance(drop,currentDrop) < erosionRadius and drop is not currentDrop:
+        if getDropDistance(drop,currentDrop) < forceRadius and drop is not currentDrop:
             nearDrops.append(drop)
     return(nearDrops)
 
