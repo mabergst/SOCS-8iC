@@ -49,6 +49,6 @@ def generateMapTest(nrOfOctaves, mapsize):
     maxElement = np.amax(heightMap)
     heightMap = heightMap/maxElement
 
-    heightMap[0,0] = -1
+    heightMap[0,0] = -0.7
             
     return heightMap

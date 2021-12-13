@@ -129,7 +129,7 @@ def getErodeNodesAndWeights(erosionRadius,posX,posY,nodesIndex,mapSize):
 
             d = getDistance([posX,posY],[mapIndexX+nodesIndex[i][0],mapIndexY+nodesIndex[i][1]])
             if d<=erosionRadius:
-                weights.append(1-math.sqrt(d))
+                weights.append(erosionRadius-math.sqrt(d))
                 nodes.append([mapIndexX+nodesIndex[i][0],mapIndexY+nodesIndex[i][1]])
     weights = softmax(weights)
 
