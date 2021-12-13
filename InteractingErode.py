@@ -5,7 +5,7 @@ import itertools
 import GenerateHeightMap as genMap
 import Droplet
 
-erosionRadius = 4
+erosionRadius = 3
 mergeRadius = 0.1
 forceRadius = 3
 inertia = 0.03
@@ -43,7 +43,7 @@ def Erode(numDroplets,heightMap):
                 offsetX = drop.posX-mapIndexX
                 offsetY = drop.posY-mapIndexY
 
-                nearDrops = getNearDrops(droplets,drop)
+                nearDrops = getNearDrops(droplets,drop,forceRadius )
 
                 for nearDrop in nearDrops:
                     if getDistance([drop.posX, drop.posY],[nearDrop.posX, nearDrop.posY]) < mergeRadius:
