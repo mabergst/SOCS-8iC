@@ -56,7 +56,6 @@ def Erode(numDroplets,heightMap):
                 if droplets.count(drop)==0:
                     continue
                 
-                nearDrops = []
                 #Set gradient and height
                 drop.setGradientAndHeight(heightMap,nearDrops)
                 prevHeight = drop.height
