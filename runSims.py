@@ -4,6 +4,7 @@ import plotly
 import plotly.graph_objects as go
 from IPython.core.display import HTML
 import matplotlib
+import matplotlib.cm
 
 import GenerateHeightMap as genMap
 import Erode
@@ -27,7 +28,7 @@ heightMap = np.loadtxt('map.txt')
 erodedMap = heightMap.copy()
 
 
-erodedMap = Erode.Erode(50000,erodedMap)
+erodedMap = Erode.Erode(70000,erodedMap)
 
 
 
@@ -41,12 +42,12 @@ camera = dict(
 
 fig = go.Figure(data=[go.Surface(colorscale=terrain,z=heightMap)])
 fig.update_layout(scene_camera=camera,title='Not Eroded')
-html= plotly.offline.plot(fig, filename='notEroded.html',include_plotlyjs='cdn')
+html= plotly.offline.plot(fig, filename='NEStandard.html',include_plotlyjs='cdn')
 
 HTML(html)
 
 figErode = go.Figure(data=[go.Surface(colorscale=terrain,z=erodedMap)])
 figErode.update_layout(scene_camera=camera,title='Eroded')
-htmlErode= plotly.offline.plot(figErode, filename='Eroded.html',include_plotlyjs='cdn')
+htmlErode= plotly.offline.plot(figErode, filename='EStandard.html',include_plotlyjs='cdn')
 HTML(htmlErode)
 
