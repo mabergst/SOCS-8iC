@@ -59,8 +59,8 @@ class Droplet:
             attractionVector[1] = attractionVector[1]/veclength
 
 
-        dirX = (self.dirX * self.inertia - (gradx+ForceFactor*attractionVector[0])*(1 - self.inertia))
-        dirY = (self.dirY * self.inertia - (grady+ForceFactor*attractionVector[1])*(1 - self.inertia))
+        dirX = (self.dirX * self.inertia - (gradx-ForceFactor*attractionVector[0])*(1 - self.inertia))
+        dirY = (self.dirY * self.inertia - (grady-ForceFactor*attractionVector[1])*(1 - self.inertia))
 
         dirLength = math.sqrt(dirX*dirX+dirY*dirY)
         if dirLength != 0:
